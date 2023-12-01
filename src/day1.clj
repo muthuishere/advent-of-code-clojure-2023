@@ -2,15 +2,6 @@
   (:require [clojure.java.io :as io]
             [clojure.string :as str]))
 
-;Inputs
-  ;1abc2
-  ;pqr3stu8vwx
-  ;a1b2c3d4e5f
-  ;treb7uchet
-
-;In this example,
-  ; the calibration values of these four lines are 12, 38, 15, and 77.
-  ; Adding these together produces 142.
 (def text-digits ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"])
 (defn is-string-a-number [inp]
   (not= nil (parse-long inp)))
@@ -18,39 +9,24 @@
 (defn text-to-number [input]
   (str (inc (.indexOf text-digits input))))
 
-
-
 (defn get-position-info-at-index [index input text-digit]
   (if (str/index-of input text-digit index)
     {:text-digit text-digit :index (str/index-of input text-digit index) :digit-to-be-replaced (text-to-number text-digit) }
     nil))
 
-
 (defn get-position-info [input text-digit]
-
-  (get-position-info-at-index 0 input text-digit)
-  (let [
-        first-index (str/index-of input text-digit)
-        last-index   (str/last-index-of input text-digit)
-        ]
+  (let [first-index (str/index-of input text-digit)
+        last-index   (str/last-index-of input text-digit)]
     (if (not= first-index last-index)
       [(get-position-info-at-index 0 input text-digit) (get-position-info-at-index (dec last-index)  input text-digit)]
-
-      [(get-position-info-at-index 0 input text-digit) ]
-      )
-    )
-
-  )
-
+      [(get-position-info-at-index 0 input text-digit)])))
 
 (defn get-all-position-data [currentline]
   (->> text-digits
        (map #(get-position-info currentline %1))
        (flatten)
        (filter not-empty)
-       (sort-by :index  #(compare %2 %1))
-       ))
-
+       (sort-by :index  #(compare %2 %1))))
 
 (defn replace-input-with[input position-info]
   (let [index (get position-info :index)
@@ -58,9 +34,8 @@
     (str (.substring input 0 index) digit-to-be-replaced  (.substring input (inc index) ))))
 
 (defn convert-text-digit-to-normal-digit [input]
-  (reduce (fn [acc,cur]
-            (replace-input-with acc cur)
-            ) input (get-all-position-data input)))
+  (reduce #(replace-input-with %1 %2)
+             input (get-all-position-data input)))
 
 (defn first-and-last [inp]
   (let [first-one (first inp)
@@ -76,21 +51,11 @@
        (reduce  str)
        (parse-long)))
 
-(comment
-  (calibrate "twoeightwo")
-
-
-
-
-
-  )
-
 (defn read-as-array-from-classpath [filename]
   (->> filename
        (io/resource)
        (slurp)
        (str/split-lines)))
-
 
 (defn find-total-calibration-value-in [filename]
   (->> filename
