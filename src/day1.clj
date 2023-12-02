@@ -1,6 +1,8 @@
 (ns day1
   (:require [clojure.java.io :as io]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [hyperfiddle.rcf :refer [tests tap %]]
+            ))
 
 (def text-digits ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"])
 (defn is-string-a-number [inp]
@@ -64,11 +66,20 @@
        (filter #(some? %1))
        (reduce +)))
 
+(tests
+
+
+  (calibrate "1abc2") := 12
+  (calibrate "pqr3stu8vwx") := 38
+
+
+
+  )
+
 (comment
 
   (find-total-calibration-value-in "original.txt")
   (find-total-calibration-value-in "sample.txt")
-
 
   (find-total-calibration-value-in "originalpart2.txt")
   (find-total-calibration-value-in "samplepart2.txt")
@@ -148,3 +159,5 @@
 
 
   )
+
+
